@@ -4,8 +4,9 @@ import { Editor } from './components/Editor';
 import { NotebooksView } from './components/NotebooksView';
 import { useNotes } from './hooks/useNotes';
 import { Note } from './types';
-import { Search as SearchIcon, FolderTree, BookOpen, FileText, Maximize2, Minimize2 } from 'lucide-react';
+import { Search as SearchIcon, FolderTree, BookOpen, FileText, Maximize2, Minimize2, LogOut } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
+import { auth } from './lib/firebase';
 
 export default function App() {
   const {
@@ -25,7 +26,8 @@ export default function App() {
     undoDelete,
     lastDeletedNote,
     clearLastDeletedNote,
-    reorderNotes
+    reorderNotes,
+    isSyncing
   } = useNotes();
 
   const [sidebarWidth, setSidebarWidth] = useState(288);
@@ -154,6 +156,19 @@ export default function App() {
               className={`p-3 rounded-2xl transition-all ${state.view === 'search' ? 'text-zinc-900 bg-white shadow-md ring-1 ring-zinc-100' : 'text-zinc-400 hover:text-zinc-600'}`}
             >
               <SearchIcon size={20} />
+            </button>
+          </div>
+
+          <div className="mt-auto flex flex-col items-center gap-4">
+            {isSyncing && (
+              <div className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" title="Synkroniserar..." />
+            )}
+            <button 
+              onClick={() => auth.signOut()}
+              className="p-3 rounded-2xl text-zinc-400 hover:text-red-500 hover:bg-red-50 transition-all"
+              title="Logga ut"
+            >
+              <LogOut size={20} />
             </button>
           </div>
         </div>

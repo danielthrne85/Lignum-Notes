@@ -1,0 +1,42 @@
+{
+  "entities": {
+    "Notebook": {
+      "title": "Notebook",
+      "description": "A collection of notes",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "color": { "type": "string" },
+        "rootNoteIds": { "type": "array", "items": { "type": "string" } },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["name", "color", "rootNoteIds", "createdAt", "updatedAt"]
+    },
+    "Note": {
+      "title": "Note",
+      "description": "An individual note within a notebook",
+      "type": "object",
+      "properties": {
+        "notebookId": { "type": "string" },
+        "title": { "type": "string" },
+        "content": { "type": "string" },
+        "parentId": { "type": "string" },
+        "children": { "type": "array", "items": { "type": "string" } },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["notebookId", "title", "content", "children", "createdAt", "updatedAt"]
+    }
+  },
+  "firestore": {
+    "/notebooks/{notebookId}": {
+      "schema": "Notebook",
+      "description": "A notebook containing meta data"
+    },
+    "/notebooks/{notebookId}/notes/{noteId}": {
+      "schema": "Note",
+      "description": "A note inside a notebook"
+    }
+  }
+}

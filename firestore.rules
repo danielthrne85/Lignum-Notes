@@ -1,0 +1,63 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Default deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Helper functions
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    // Notebook validation
+    function isValidNotebook(data) {
+      return data.name is string && data.name.size() > 0 && data.name.size() <= 100
+          && data.color is string && data.color.size() <= 20
+          && data.rootNoteIds is list
+          && data.rootNoteIds.size() <= 500
+          && data.updatedAt is timestamp;
+    }
+
+    // Note validation
+    function isValidNote(data) {
+      return data.notebookId is string && isValidId(data.notebookId)
+          && data.title is string && data.title.size() <= 500
+          && data.content is string && data.content.size() <= 1048576 // 1MB limit for content string
+          && data.children is list && data.children.size() <= 1000
+          && data.updatedAt is timestamp;
+    }
+
+    match /notebooks/{notebookId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn() && isValidId(notebookId) && isValidNotebook(incoming());
+      allow update: if isSignedIn() && isValidNotebook(incoming());
+      allow delete: if isSignedIn();
+
+      match /notes/{noteId} {
+        allow read: if isSignedIn();
+        allow create: if isSignedIn() && isValidId(noteId) && isValidNote(incoming());
+        allow update: if isSignedIn() && isValidNote(incoming());
+        allow delete: if isSignedIn();
+      }
+    }
+
+    // Interaction collection for system connection test
+    match /test/connection {
+      allow read: if true;
+    }
+  }
+}
