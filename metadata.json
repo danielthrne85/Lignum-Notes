@@ -1,0 +1,6 @@
+{
+  "name": "Lignum Notes",
+  "description": "A tree-structured note-taking app with sub-pages, YouTube embeds, and tag flagging.",
+  "requestFramePermissions": [],
+  "majorCapabilities": []
+}

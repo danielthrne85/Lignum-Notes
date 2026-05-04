@@ -1,0 +1,40 @@
+@import "tailwindcss";
+
+@layer base {
+  .tiptap {
+    @apply outline-none min-h-[600px];
+  }
+
+  .tiptap ol {
+    @apply list-none;
+    counter-reset: item;
+  }
+
+  .tiptap ol > li {
+    @apply flex items-start mb-1;
+    counter-increment: item;
+  }
+
+  .tiptap ol > li::before {
+    content: counter(item) ") ";
+    @apply font-bold text-zinc-900 mr-2 shrink-0 min-w-[1.5rem] text-right mt-1 text-sm;
+  }
+
+  /* Styling för nästlade listor */
+  .tiptap ol ol, .tiptap ol ul, .tiptap ul ol, .tiptap ul ul {
+    @apply ml-8 mt-2 transition-all;
+  }
+
+  .tiptap ul {
+    @apply list-none pl-0;
+  }
+
+  .tiptap ul > li {
+    @apply flex items-start mb-1;
+  }
+
+  .tiptap ul > li::before {
+    content: "•";
+    @apply font-black text-xl leading-none text-zinc-900 mr-3 shrink-0 mt-0.5;
+  }
+}
