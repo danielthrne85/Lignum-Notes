@@ -154,9 +154,19 @@ export default function App() {
             <button 
               onClick={() => setView('search')}
               className={`p-3 rounded-2xl transition-all ${state.view === 'search' ? 'text-zinc-900 bg-white shadow-md ring-1 ring-zinc-100' : 'text-zinc-400 hover:text-zinc-600'}`}
+              title="Sök"
             >
               <SearchIcon size={20} />
             </button>
+            <a
+              href="https://notebooklm.google.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="p-3 rounded-2xl text-zinc-400 hover:text-blue-600 hover:bg-white transition-all font-bold text-sm tracking-tighter flex items-center justify-center h-[44px] w-[44px]"
+              title="NotebookLM"
+            >
+              LB
+            </a>
           </div>
 
           <div className="mt-auto flex flex-col items-center gap-4">

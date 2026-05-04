@@ -53,6 +53,8 @@ function handleFirestoreError(error: unknown, operationType: OperationType, path
   throw new Error(JSON.stringify(errInfo));
 }
 
+const LAST_SESSION_KEY = 'lignum_last_session';
+
 const initialState: AppState = {
   notebooks: {},
   activeNotebookId: '',
@@ -62,7 +64,32 @@ const initialState: AppState = {
 };
 
 export function useNotes() {
-  const [state, setState] = useState<AppState>(initialState);
+  const [state, setState] = useState<AppState>(() => {
+    const saved = localStorage.getItem(LAST_SESSION_KEY);
+    if (saved) {
+      try {
+        const { activeNotebookId, activeNoteId } = JSON.parse(saved);
+        return {
+          ...initialState,
+          activeNotebookId: activeNotebookId || '',
+          activeNoteId: activeNoteId || null,
+          view: activeNotebookId ? 'notes' : 'notebooks'
+        };
+      } catch (e) {
+        return initialState;
+      }
+    }
+    return initialState;
+  });
+
+  useEffect(() => {
+    if (state.activeNotebookId) {
+      localStorage.setItem(LAST_SESSION_KEY, JSON.stringify({
+        activeNotebookId: state.activeNotebookId,
+        activeNoteId: state.activeNoteId
+      }));
+    }
+  }, [state.activeNotebookId, state.activeNoteId]);
   const [lastDeletedNote, setLastDeletedNote] = useState<{ note: Note; notebookId: string; index: number } | null>(null);
   const [isSyncing, setIsSyncing] = useState(true);
 
