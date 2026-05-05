@@ -147,6 +147,7 @@ export function useNotes() {
               const data = change.doc.data();
               newNotes[change.doc.id] = {
                 id: change.doc.id,
+                notebookId: data.notebookId || notebookId,
                 title: data.title,
                 content: data.content,
                 parentId: data.parentId,
@@ -261,6 +262,7 @@ export function useNotes() {
     }
     const nbId = state.activeNotebookId;
     const newNote = createNewNote(parentId, title);
+    newNote.notebookId = nbId;
     const newNoteId = newNote.id;
     
     try {
@@ -334,23 +336,30 @@ export function useNotes() {
     const { note, notebookId } = lastDeletedNote;
     
     try {
-      await setDoc(doc(db, 'notebooks', notebookId, 'notes', note.id), {
+      const restoredNote = {
         ...note,
+        notebookId,
         createdAt: serverTimestamp(),
         updatedAt: serverTimestamp(),
-      });
+      };
+      // Remove id from the document data itself if your rules or schema don't expect it in data
+      const { id, ...noteData } = restoredNote;
+
+      await setDoc(doc(db, 'notebooks', notebookId, 'notes', id), noteData);
 
       if (note.parentId === null) {
         await updateDoc(doc(db, 'notebooks', notebookId), { 
-          rootNoteIds: arrayUnion(note.id), 
+          rootNoteIds: arrayUnion(id), 
           updatedAt: serverTimestamp() 
         });
       } else {
         await updateDoc(doc(db, 'notebooks', notebookId, 'notes', note.parentId), { 
-          children: arrayUnion(note.id), 
+          children: arrayUnion(id), 
           updatedAt: serverTimestamp() 
         });
       }
+      
+      setState(s => ({ ...s, activeNoteId: id, view: 'notes' }));
       setLastDeletedNote(null);
     } catch (error) {
       handleFirestoreError(error, OperationType.CREATE, `notebooks/${notebookId}/notes/${note.id}`);

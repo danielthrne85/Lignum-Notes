@@ -165,7 +165,7 @@ export default function App() {
               className="p-3 rounded-2xl text-zinc-400 hover:text-blue-600 hover:bg-white transition-all font-bold text-sm tracking-tighter flex items-center justify-center h-[44px] w-[44px]"
               title="NotebookLM"
             >
-              LB
+              LM
             </a>
           </div>
 

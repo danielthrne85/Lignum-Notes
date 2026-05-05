@@ -483,11 +483,11 @@ export const Editor = ({
 
       {/* Editor Surface */}
       <div 
-        className="flex-1 overflow-y-auto cursor-text focus:outline-none bg-white p-4"
+        className="flex-1 overflow-y-auto overflow-x-hidden cursor-text focus:outline-none bg-white p-4"
         onClick={() => editor.chain().focus().run()}
       >
-        <div className="max-w-4xl mx-auto p-4 lg:p-8 prose prose-zinc prose-lg lg:prose-xl max-w-none min-h-full">
-          <EditorContent editor={editor} className="min-h-full [&_.tiptap]:outline-none [&_.tiptap]:min-h-[600px] text-zinc-800" />
+        <div className="max-w-4xl mx-auto p-4 lg:p-8 prose prose-zinc prose-lg lg:prose-xl max-w-none min-h-full break-words">
+          <EditorContent editor={editor} className="min-h-full [&_.tiptap]:outline-none [&_.tiptap]:min-h-[600px] text-zinc-800 break-words" />
         </div>
       </div>
         

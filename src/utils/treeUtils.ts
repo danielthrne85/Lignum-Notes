@@ -11,6 +11,7 @@ export const generateId = () => Math.random().toString(36).substr(2, 9);
 
 export const createNewNote = (parentId: string | null = null, title: string = 'New Note'): Note => ({
   id: generateId(),
+  notebookId: '',
   title,
   content: '',
   parentId,
